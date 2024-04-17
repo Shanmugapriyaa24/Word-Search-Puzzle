@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Word Search Puzzle</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #72D17C;
+        }
+
+        .container {
+            margin-top: 50px;
+            position: relative;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+        }
+
+        .puzzle-grid {
+            width: 70%;
+            margin-right: 30px;
+        }
+
+        table {
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .words-list {
+            width: 30%;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+        }
+
+        .list-group {
+            background-color: transparent;
+        }
+
+        .list-group-item {
+            background-color: #AAF9D9;
+            color: #333;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .word-found {
+            text-decoration: line-through;
+            background-color: #D3D3D3;
+        }
+
+        .word-search-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+            gap: 5px;
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            background-color: #ffffff;
+            padding: 10px;
+            border: 2px solid #333333;
+            border-radius: 10px;
+        }
+
+        .word-search-letter {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333333;
+            background-color: #ffffff;
+            padding: 5px;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+        }
+
+        .selected {
+            background-color: #ffc107;
+        }
+
+        .highlight {
+            background-color: #d172c7;
+        }
+
+        .timer-wrapper {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            color: white;
+        }
+
+        .timer-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            background-image: url("D://DAA//images//timer.png");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .timer-text {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Word Search Puzzle</h1>
+        <div class="row">
+            <div class="col puzzle-grid">
+                <table class="table table-bordered">
+                    {% for row in grid %}
+                    <tr>
+                        {% for cell in row %}
+                        <td onclick="selectGrid(this)">{{ cell }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </table>
+                <button class="btn btn-primary" onclick="submitWord()">Submit</button>
+            </div>
+            <div class="col-4 words-list">
+                <h2>Words to Find:</h2>
+                <ul class="list-group">
+                    {% for word in words %}
+                    <li id="{{ word }}" class="list-group-item">{{ word }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="timer-wrapper">
+            <div class="timer-icon"></div>
+            <div class="timer-text" id="timer">00:00</div>
+        </div>
+    </div>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        let selectedGrids = [];
+        let selectedWord = '';
+        let foundWords = [];
+
+        let startTime = new Date().getTime(); // Record the start time
+        let timerInterval = setInterval(updateTimer, 1000); // Update the timer every second
+
+        function selectGrid(cell) {
+            if (cell.classList.contains('selected')) {
+                cell.classList.remove('selected');
+                selectedGrids.pop();
+                selectedWord = selectedWord.slice(0, -1);
+            } else {
+                cell.classList.add('selected');
+                selectedGrids.push(cell);
+                selectedWord += cell.innerText;
+            }
+        }
+
+        function submitWord() {
+            const selectedCells = document.querySelectorAll('.selected');
+            const selectedWordId = selectedWord.toLowerCase();
+
+            // Check if the submitted word is in the word list
+            const wordElement = document.getElementById(selectedWordId);
+            if (wordElement) {
+                // Remove the 'selected' class from the selected grid cells
+                selectedCells.forEach(cell => {
+                    cell.classList.remove('selected');
+                });
+
+                // Add the 'highlight' class to the selected grid cells
+                selectedCells.forEach(cell => {
+                    cell.classList.add('highlight');
+                });
+
+                // Add the 'word-found' class to the word in the word list
+                wordElement.classList.add('word-found');
+
+                foundWords.push(selectedWordId); // Add the word to the foundWords array
+            }
+
+            selectedGrids = []; // Clear the selectedGrids array
+            selectedWord = ''; // Clear the selectedWord variable
+
+            checkGameEnd(); // Check if the game has ended
+        }
+
+        function checkGameEnd() {
+            const wordsList = document.querySelectorAll('.words-list li');
+            const allWordsFound = [...wordsList].every(word => foundWords.includes(word.id));
+
+            if (allWordsFound) {
+                clearInterval(timerInterval); // Stop the timer
+                alert('Congratulations! You have found all the words.');
+            }
+        }
+
+        function updateTimer() {
+            const currentTime = new Date().getTime();
+            const timeDifference = currentTime - startTime;
+            const seconds = Math.floor(timeDifference / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const formattedTime = padZero(minutes) + ':' + padZero(seconds % 60);
+            document.getElementById('timer').innerText = formattedTime;
+        }
+
+        function padZero(num) {
+            return num.toString().padStart(2, '0');
+        }
+    </script>
+</body>
+</html>

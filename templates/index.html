@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Word Search Puzzle</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #dea3d0;
+        }
+
+        .container {
+            margin-top: 100px;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+        }
+
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Word Search Puzzle Generator</h1>
+        <div class="row justify-content-center mt-5">
+            <div class="col-lg-4 col-md-6 col-sm-8 form-container">
+                <form action="/puzzle" method="POST">
+                    <div class="form-group">
+                        <label for="grid_size">Grid Size:</label>
+                        <input type="number" class="form-control" id="grid_size" name="grid_size" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="num_words">Number of Words:</label>
+                        <input type="number" class="form-control" id="num_words" name="num_words" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Generate Puzzle</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
